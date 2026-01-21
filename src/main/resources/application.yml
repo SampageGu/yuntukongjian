@@ -36,7 +36,6 @@ knife4j:
     terms-of-service-url: https://stackoverflow.com/
     group:
       default:
-        group-name: 默认分组
         api-rule: package
         api-rule-resources:
           - com.yupi.yupicturebakend.controller
