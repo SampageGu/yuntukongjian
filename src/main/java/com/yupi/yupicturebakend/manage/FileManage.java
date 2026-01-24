@@ -59,7 +59,7 @@ public class FileManage {
         try {
             file = File.createTempFile(uploadPath, null);
             multipartFile.transferTo(file);
-            PutObjectResult putObjectResult = cosManage.putObject(uploadPath, file);
+            PutObjectResult putObjectResult = cosManage.putPictureObject(uploadPath, file);
             ImageInfo imageInfo = putObjectResult.getCiUploadResult().getOriginalInfo().getImageInfo();
 //封装返回结果
 //      计算宽和高
