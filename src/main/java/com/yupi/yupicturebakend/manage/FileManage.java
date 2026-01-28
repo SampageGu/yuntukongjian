@@ -18,6 +18,7 @@ import com.yupi.yupicturebakend.exception.ErrorCode;
 import com.yupi.yupicturebakend.exception.ThrowUtils;
 import com.yupi.yupicturebakend.model.dto.file.UploadPictureResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,8 +35,12 @@ import java.util.List;
 import static org.bouncycastle.asn1.cms.CMSAttributes.contentType;
 
 
+/**
+ * 已废弃，使用FilePictureUpload
+ */
 @Slf4j
 @Service
+@Deprecated
 public class FileManage {
 
     @Resource
