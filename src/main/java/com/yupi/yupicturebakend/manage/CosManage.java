@@ -8,6 +8,7 @@ import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.model.ciModel.persistence.PicOperations;
 import com.yupi.yupicturebakend.config.CosClientConfig;
+import org.jsoup.internal.StringUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -64,7 +65,7 @@ public class CosManage {
         picOperations.setIsPicInfo(1);
 //        图片处理规则列表
         List<PicOperations.Rule>rules=new ArrayList<>();
-//      图片压缩（转成webp格式）
+//      1、图片压缩（转成webp格式）
        String webpKey= FileUtil.mainName(key)+".webp";
 
        PicOperations.Rule compressRule=new PicOperations.Rule();
@@ -72,10 +73,33 @@ public class CosManage {
        compressRule.setBucket(cosClientConfig.getBucket());
        compressRule.setRule("imageMogr2/format/webp");
        rules.add(compressRule);
+//       2、缩略图处理 仅对>20KB的图片进行处理
+        if(file.length()>2*1024)
+        {
+            PicOperations.Rule thumbnailRule=new PicOperations.Rule();
+//       缩略图的路径
+            String cthumbnailKey= FileUtil.mainName(key)+"_thumbnail"+FileUtil.getSuffix(key);
+            thumbnailRule.setFileId(cthumbnailKey);
+            thumbnailRule.setBucket(cosClientConfig.getBucket());
+            thumbnailRule.setRule(String.format("imageMogr2/thumbnail/%sx%s>", 256, 256));
+            rules.add(thumbnailRule);
+        }
+
+
 
 //        构造处理函数
         picOperations.setRules(rules);
         putObjectRequest.setPicOperations(picOperations);
         return cosClient.putObject(putObjectRequest);
+    }
+
+
+    /**
+     * 删除对象
+     * @param key 唯一键
+     */
+    public void deleteObject(String key) {
+
+       cosClient.deleteObject(cosClientConfig.getBucket(),key);
     }
 }

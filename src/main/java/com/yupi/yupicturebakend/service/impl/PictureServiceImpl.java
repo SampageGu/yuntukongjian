@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.yupicturebakend.exception.BusinessException;
 import com.yupi.yupicturebakend.exception.ErrorCode;
 import com.yupi.yupicturebakend.exception.ThrowUtils;
+import com.yupi.yupicturebakend.manage.CosManage;
 import com.yupi.yupicturebakend.manage.FileManage;
 import com.yupi.yupicturebakend.manage.upload.FilePictureUpload;
 import com.yupi.yupicturebakend.manage.upload.PictureUploadTemplate;
@@ -32,6 +33,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -62,6 +65,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 
     @Resource
     private FilePictureUpload filePictureUpload;
+    @Autowired
+    private CosManage cosManage;
 
     /**
      * 上传图片
@@ -81,8 +86,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             pictureId = pictureUploadRequest.getId();
         }
 //      如果是更新，判断图片是否存在
+        Picture oldPicture=null;
         if (pictureId != null) {
-            Picture oldPicture = this.getById(pictureId);
+            oldPicture = this.getById(pictureId);
 
             ThrowUtils.throwIf(oldPicture == null, ErrorCode.NOT_FOUND_ERROR, "图片不存在");
 //            仅本人或管理员可编辑图片
@@ -105,7 +111,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         //        补充审核参数
 //        操作数据库
         Picture picture = new Picture();
+
         BeanUtils.copyProperties(uploadPictureResult, picture);
+        picture.setThumbnailUrl(uploadPictureResult.getThumbnailUrl());
 //        支持外层上传图片名称
         String picName = uploadPictureResult.getPicName();
         if(pictureUploadRequest!=null&&pictureUploadRequest.getPicName()!=null)
@@ -123,8 +131,14 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 //        补充审核参数
         this.fillReviewParams(picture, user);
         boolean saved = this.saveOrUpdate(picture);
-        ThrowUtils.throwIf(saved == false, ErrorCode.OPERATION_ERROR, "数据库操作失败");
 
+
+        ThrowUtils.throwIf(saved == false, ErrorCode.OPERATION_ERROR, "数据库操作失败");
+//       如果是更新，清理图片资源
+        if(oldPicture!=null&&!oldPicture.getUrl().equals(picture.getUrl()))
+        {
+        clearPictureFile(oldPicture);
+        }
 
         return PictureVO.objToVo(picture);
     }
@@ -393,6 +407,36 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 
 
         return uploadCount;
+    }
+
+    /**
+     * 清理图片
+     *
+     * @param oldPicture
+     */
+    @Async
+    @Override
+    public void clearPictureFile(Picture oldPicture) {
+//        1、判断该图片是否被多条记录使用
+        String pictureUrl=oldPicture.getUrl();
+        long count = this.lambdaQuery()
+                .eq(Picture::getUrl, pictureUrl)
+                .count();
+//        不止一条记录用到了该数据
+        if(count>1)
+        {
+            return;
+        }
+//        删除图片
+        cosManage.deleteObject(pictureUrl);
+//        删除缩略图
+        String thumbnailUrl = oldPicture.getThumbnailUrl();
+
+        if(StrUtil.isNotBlank(thumbnailUrl))
+        {
+            cosManage.deleteObject(thumbnailUrl);
+        }
+
     }
 }
 

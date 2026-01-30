@@ -57,6 +57,10 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
         <!--工具库：https://doc.hutool.cn/pages/index/-->
         <dependency>
             <groupId>cn.hutool</groupId>

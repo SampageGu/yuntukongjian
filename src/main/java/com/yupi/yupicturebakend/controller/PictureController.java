@@ -124,6 +124,8 @@ public class PictureController {
 //        操作数据库
         boolean b = pictureService.removeById(Id);
         ThrowUtils.throwIf(!b, ErrorCode.OPERATION_ERROR);
+//        清理图片资源
+        pictureService.clearPictureFile(picture);
         return ResultUtils.success(b);
 
 

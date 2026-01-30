@@ -11,6 +11,11 @@ public class PictureUpdateRequest implements Serializable {
 
     private Long id;
 
+    /**
+     * 缩略图url
+     */
+    private String thumbnailUrl;
+
 
     private String name;
 
