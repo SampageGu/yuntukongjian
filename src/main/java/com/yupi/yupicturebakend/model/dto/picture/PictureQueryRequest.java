@@ -16,43 +16,21 @@ import java.util.List;
 public class PictureQueryRequest extends PageRequest implements Serializable {
 
 
-    private Long id;
-
-
-    private String name;
-
-
-    private String introduction;
-
-
-    private String category;
-
-
-    private List<String> tags;
-
-
-    private Long picSize;
-
-
-    private Integer picWidth;
-
-
-    private Integer picHeight;
-
-
-    private Double picScale;
-
-
-    private String picFormat;
-
-
-    private String searchText;
-
-
-    private Long userId;
-
     private static final long serialVersionUID = 1L;
-
+    private Long id;
+    private String name;
+    private String introduction;
+    private String category;
+    private List<String> tags;
+    private Long picSize;
+    private Integer picWidth;
+    private Integer picHeight;
+    private Double picScale;
+    private String picFormat;
+    private String searchText;
+    private Long userId;
+    private Long spaceId;
+    private boolean nullSpaceId;
     /**
      * 审核状态：0-待审核; 1-通过; 2-拒绝
      */
@@ -69,4 +47,6 @@ public class PictureQueryRequest extends PageRequest implements Serializable {
      * 审核时间
      */
     private Date reviewTime;
+
+
 }
