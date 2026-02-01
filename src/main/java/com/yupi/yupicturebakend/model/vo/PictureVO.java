@@ -49,6 +49,7 @@ public class PictureVO implements Serializable {
 
     private String picFormat;
 
+    private String picColor;
 
     private Long userId;
     /**
