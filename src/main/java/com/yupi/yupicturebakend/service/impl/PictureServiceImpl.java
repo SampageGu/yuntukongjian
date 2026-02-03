@@ -8,6 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.repository.AbstractRepository;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yupi.yupicturebakend.api.aliyunai.AliYunAiApi;
+import com.yupi.yupicturebakend.api.aliyunai.model.CreateOutPaintingTaskRequest;
+import com.yupi.yupicturebakend.api.aliyunai.model.CreateOutPaintingTaskResponse;
 import com.yupi.yupicturebakend.exception.BusinessException;
 import com.yupi.yupicturebakend.exception.ErrorCode;
 import com.yupi.yupicturebakend.exception.ThrowUtils;
@@ -79,6 +82,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 
     @Resource
     private TransactionTemplate transactionTemplate;
+
+    @Resource
+    private AliYunAiApi aliYunAiApi;
 
     /**
      * 上传图片
@@ -697,6 +703,36 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 //        5、操作数据库进行批量更新
         boolean b = this.updateBatchById(pictureList);
         ThrowUtils.throwIf(!b, ErrorCode.OPERATION_ERROR, "编辑数据库失败");
+    }
+
+    /**
+     * ai绘图
+     *
+     * @param createPictureOutPaintingTaskRequest
+     * @param loginUser
+     */
+    @Override
+    public CreateOutPaintingTaskResponse createOutPaintingTaskResponse(CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest, User loginUser) {
+        Long pictureId = createPictureOutPaintingTaskRequest.getPictureId();
+        Picture picture = this.getById(pictureId);
+        ThrowUtils.throwIf(picture == null, ErrorCode.PARAMS_ERROR, "图片不存在");
+//        权限校验
+        checkPictureAuth(loginUser, picture);
+        if (picture.getPicWidth() < 512 || picture.getPicHeight() < 512) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "图片尺寸太小，无法进行AI扩图，请上传长宽大于 512px 的图片");
+        }
+        if (picture.getPicWidth() > 4096 || picture.getPicHeight() > 4096) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "图片尺寸太大，无法进行AI扩图");
+        }
+//        创建请求参数
+        CreateOutPaintingTaskRequest createOutPaintingTaskRequest = new CreateOutPaintingTaskRequest();
+        CreateOutPaintingTaskRequest.Input input = new CreateOutPaintingTaskRequest.Input();
+        input.setImageUrl(picture.getUrl());
+        createOutPaintingTaskRequest.setInput(input);
+        createOutPaintingTaskRequest.setParameters(createPictureOutPaintingTaskRequest.getParameters());
+//创建任务
+        return aliYunAiApi.createOutPaintingTask(createOutPaintingTaskRequest);
+
     }
 
     /**

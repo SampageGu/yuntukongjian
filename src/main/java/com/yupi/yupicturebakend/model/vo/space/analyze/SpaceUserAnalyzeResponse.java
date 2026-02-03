@@ -1,0 +1,24 @@
+package com.yupi.yupicturebakend.model.vo.space.analyze;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+/**
+ * 空间用户上传行为响应
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class SpaceUserAnalyzeResponse implements Serializable {
+
+
+    private String period;
+
+
+    private Long count;
+
+    private static final long serialVersionUID = 1L;
+}
