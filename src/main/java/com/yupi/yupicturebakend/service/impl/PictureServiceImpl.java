@@ -560,8 +560,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 
         Picture oldPicture = this.getById(pictureId);
         ThrowUtils.throwIf(oldPicture == null, ErrorCode.NOT_FOUND_ERROR);
-
-        checkPictureAuth(loginUser, oldPicture);
+//            已经改为注解鉴权
+//        checkPictureAuth(loginUser, oldPicture);
 
         //        删除图片开启事务
         transactionTemplate.execute(status -> {
@@ -603,8 +603,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         long id = pictureEditRequest.getId();
         Picture oldPicture = this.getById(id);
         ThrowUtils.throwIf(oldPicture == null, ErrorCode.NOT_FOUND_ERROR);
-
-        checkPictureAuth(loginUser, oldPicture);
+//            已经改为注解鉴权
+//        checkPictureAuth(loginUser, oldPicture);
 
         this.fillReviewParams(picture, loginUser);
 
@@ -717,7 +717,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         Picture picture = this.getById(pictureId);
         ThrowUtils.throwIf(picture == null, ErrorCode.PARAMS_ERROR, "图片不存在");
 //        权限校验
-        checkPictureAuth(loginUser, picture);
+        //            已经改为注解鉴权
+//        checkPictureAuth(loginUser, picture);
         if (picture.getPicWidth() < 512 || picture.getPicHeight() < 512) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "图片尺寸太小，无法进行AI扩图，请上传长宽大于 512px 的图片");
         }

@@ -13,6 +13,7 @@ import com.yupi.yupicturebakend.constant.UserConstant;
 import com.yupi.yupicturebakend.exception.BusinessException;
 import com.yupi.yupicturebakend.exception.ErrorCode;
 import com.yupi.yupicturebakend.exception.ThrowUtils;
+import com.yupi.yupicturebakend.manage.auth.SpaceUserAuthManager;
 import com.yupi.yupicturebakend.model.dto.space.*;
 import com.yupi.yupicturebakend.model.entity.Space;
 import com.yupi.yupicturebakend.model.entity.User;
@@ -23,6 +24,7 @@ import com.yupi.yupicturebakend.service.SpaceService;
 import com.yupi.yupicturebakend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.DigestUtils;
@@ -48,6 +50,8 @@ public class SpaceController {
 
     @Resource
     private UserService userService;
+    @Autowired
+    private SpaceUserAuthManager spaceUserAuthManager;
 
 
     /**
@@ -143,8 +147,10 @@ public class SpaceController {
         Space space = spaceService.getById(id);
 
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR);
-
-        return ResultUtils.success(spaceService.getSpaceVO(space, request));
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, userService.getLoginUser(request));
+        SpaceVO spaceVO = spaceService.getSpaceVO(space, request);
+        spaceVO.setPermissionList(permissionList);
+        return ResultUtils.success(spaceVO);
     }
 
 
