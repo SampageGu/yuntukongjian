@@ -1,10 +1,10 @@
-package com.yupi.yupicturebakend;
+package com.yupi.yupicturebackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class YuPictureBakendApplicationTests {
+class yupicturebackendApplicationTests {
 
     @Test
     void contextLoads() {

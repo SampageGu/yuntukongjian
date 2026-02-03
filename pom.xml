@@ -106,6 +106,12 @@
             <artifactId>cos_api</artifactId>
             <version>5.6.227</version>
         </dependency>
+        <!-- 分库分表 -->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+            <version>5.2.0</version>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>
@@ -144,7 +150,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.yupi.yupicturebakend.YuPictureBakendApplication</mainClass>
+                    <mainClass>com.yupi.yupicturebackend.yupicturebackendApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>

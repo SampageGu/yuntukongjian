@@ -1,4 +1,4 @@
-package com.yupi.yupicturebakend;
+package com.yupi.yupicturebackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

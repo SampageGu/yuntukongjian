@@ -1,0 +1,32 @@
+package com.yupi.yupicturebackend.model.dto.picture;
+
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
+
+@Data
+public class PictureUpdateRequest implements Serializable {
+
+
+    private Long id;
+
+    /**
+     * 缩略图url
+     */
+    private String thumbnailUrl;
+
+
+    private String name;
+
+
+    private String introduction;
+
+
+    private String category;
+
+
+    private List<String> tags;
+
+    private static final long serialVersionUID = 1L;
+}
