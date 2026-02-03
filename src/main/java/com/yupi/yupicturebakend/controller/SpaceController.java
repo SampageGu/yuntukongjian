@@ -15,6 +15,7 @@ import com.yupi.yupicturebakend.exception.ErrorCode;
 import com.yupi.yupicturebakend.exception.ThrowUtils;
 import com.yupi.yupicturebakend.manage.auth.SpaceUserAuthManager;
 import com.yupi.yupicturebakend.model.dto.space.*;
+import com.yupi.yupicturebakend.model.entity.Picture;
 import com.yupi.yupicturebakend.model.entity.Space;
 import com.yupi.yupicturebakend.model.entity.User;
 
@@ -147,7 +148,7 @@ public class SpaceController {
         Space space = spaceService.getById(id);
 
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR);
-        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, userService.getLoginUser(request));
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, new Picture(),userService.getLoginUser(request));
         SpaceVO spaceVO = spaceService.getSpaceVO(space, request);
         spaceVO.setPermissionList(permissionList);
         return ResultUtils.success(spaceVO);

@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.yupi.yupicturebakend.manage.auth.model.SpaceUserAuthConfig;
 import com.yupi.yupicturebakend.manage.auth.model.SpaceUserPermission;
 import com.yupi.yupicturebakend.manage.auth.model.SpaceUserRole;
+import com.yupi.yupicturebakend.model.entity.Picture;
 import com.yupi.yupicturebakend.model.entity.Space;
 import com.yupi.yupicturebakend.model.entity.SpaceUser;
 import com.yupi.yupicturebakend.model.entity.User;
@@ -58,10 +59,11 @@ public class SpaceUserAuthManager {
     /**
      * 获取用户在空间中的权限列表
      * @param space
+     * @param picture
      * @param loginUser
      * @return
      */
-    public List<String> getPermissionList(Space space, User loginUser) {
+    public List<String> getPermissionList(Space space, Picture picture, User loginUser) {
         if (loginUser == null) {
             return new ArrayList<>();
         }
@@ -72,7 +74,14 @@ public class SpaceUserAuthManager {
             if (userService.isAdmin(loginUser)) {
                 return ADMIN_PERMISSIONS;
             }
+
+            // 如果提供了图片对象，判断是否为本人上传
+            if (picture != null && loginUser.getId().equals(picture.getUserId())) {
+                return ADMIN_PERMISSIONS; // 本人上传，拥有管理权限
+            }
+//            否则，返回空
             return new ArrayList<>();
+
         }
         SpaceTypeEnum spaceTypeEnum = SpaceTypeEnum.getEnumByValue(space.getSpaceType());
         if (spaceTypeEnum == null) {

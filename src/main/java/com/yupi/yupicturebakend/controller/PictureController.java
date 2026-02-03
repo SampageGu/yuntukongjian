@@ -217,7 +217,9 @@ public class PictureController {
 
 
         }
-        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, userService.getLoginUser(request));
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, picture,userService.getLoginUser(request));
+//        使用log输出权限列表
+        log.info("picture id {} permission list: {}", id, JSONUtil.toJsonStr(permissionList));
         PictureVO pictureVO = pictureService.getPictureVO(picture, request);
         pictureVO.setPermissionList(permissionList);
         return ResultUtils.success(pictureVO);

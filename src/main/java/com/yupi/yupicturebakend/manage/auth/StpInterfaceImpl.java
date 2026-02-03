@@ -23,6 +23,7 @@ import com.yupi.yupicturebakend.service.PictureService;
 import com.yupi.yupicturebakend.service.SpaceService;
 import com.yupi.yupicturebakend.service.SpaceUserService;
 import com.yupi.yupicturebakend.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -35,6 +36,7 @@ import java.util.*;
 import static com.yupi.yupicturebakend.constant.UserConstant.USER_LOGIN_STATE;
 
 @Component
+@Slf4j
 public class StpInterfaceImpl implements StpInterface {
 
     @Resource
@@ -57,6 +59,7 @@ public class StpInterfaceImpl implements StpInterface {
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
+        log.info("进入权限校验，loginId: {}, loginType: {}", loginId, loginType);
         // 判断 loginType，仅对类型为 "space" 进行权限校验
         if (!StpKit.SPACE_TYPE.equals(loginType)) {
             return new ArrayList<>();
@@ -117,6 +120,7 @@ public class StpInterfaceImpl implements StpInterface {
             spaceId = picture.getSpaceId();
             // 公共图库，仅本人或管理员可操作
             if (spaceId == null) {
+                log.info(picture.getUserId()+"---"+userId);
                 if (picture.getUserId().equals(userId) || userService.isAdmin(loginUser)) {
                     return ADMIN_PERMISSIONS;
                 } else {

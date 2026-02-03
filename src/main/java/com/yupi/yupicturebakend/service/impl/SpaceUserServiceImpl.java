@@ -71,7 +71,7 @@ public class SpaceUserServiceImpl extends ServiceImpl<SpaceUserMapper, SpaceUser
         // 关联查询空间信息
         Long spaceId = spaceUser.getSpaceId();
         if (spaceId != null && spaceId > 0) {
-            // TODO 后续补充空间信息
+
             Space space = spaceService.getById(spaceId);
 
             SpaceVO spaceVO = spaceService.getSpaceVO(space, request);
