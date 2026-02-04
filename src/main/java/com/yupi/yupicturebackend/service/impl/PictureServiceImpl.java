@@ -23,13 +23,16 @@ import com.yupi.yupicturebackend.model.dto.picture.*;
 
 import com.yupi.yupicturebackend.model.entity.Picture;
 import com.yupi.yupicturebackend.model.entity.Space;
+import com.yupi.yupicturebackend.model.entity.SpaceUser;
 import com.yupi.yupicturebackend.model.entity.User;
 import com.yupi.yupicturebackend.model.enums.PictureReviewStatusEnum;
+import com.yupi.yupicturebackend.model.enums.SpaceRoleEnum;
 import com.yupi.yupicturebackend.model.vo.PictureVO;
 import com.yupi.yupicturebackend.model.vo.UserVO;
 import com.yupi.yupicturebackend.service.PictureService;
 import com.yupi.yupicturebackend.mapper.PictureMapper;
 import com.yupi.yupicturebackend.service.SpaceService;
+import com.yupi.yupicturebackend.service.SpaceUserService;
 import com.yupi.yupicturebackend.service.UserService;
 import com.yupi.yupicturebackend.utils.ColorSimilarUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +88,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     @Resource
     private AliYunAiApi aliYunAiApi;
 
+    @Resource
+    private SpaceUserService spaceUserService;
+
     /**
      * 上传图片
      *
@@ -102,8 +108,15 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         if (spaceId != null) {
             Space space = spaceService.getById(spaceId);
             ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR, "空间不存在");
-            //        校验是否有空间的权限，仅空间管理员可以上传
-            if (!user.getId().equals(space.getUserId()) && !userService.isAdmin(user)) {
+//        校验是否有空间的权限，仅空间管理员可以上传
+
+//            根据用户id和spaceId查询spaceUser表，查询当前用户的权限
+            SpaceUser spaceUser = spaceUserService.lambdaQuery()
+                    .eq(SpaceUser::getSpaceId, spaceId) // 锁定空间
+                    .eq(SpaceUser::getUserId, user.getId())   // 锁定用户
+                    .one(); // 获取唯一一条记录
+
+            if (!user.getId().equals(space.getUserId()) && !userService.isAdmin(user)&& !spaceUser.getSpaceRole().equals(SpaceRoleEnum.ADMIN.getValue())) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
 //            校验大小
