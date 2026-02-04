@@ -55,9 +55,10 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
     @Resource
     private SpaceUserService spaceUserService;
 
-    @Resource
-    @Lazy
-    private DynamicShardingManager dynamicShardingManager;
+//    为了方便部署，注释掉
+//    @Resource
+//    @Lazy
+//    private DynamicShardingManager dynamicShardingManager;
 
     /**
      * 分页查询
@@ -303,7 +304,7 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
                 }
 
 //                动态创建分表，仅对团队空间生效
-                dynamicShardingManager.createSpacePictureTable(space);
+//                dynamicShardingManager.createSpacePictureTable(space);
 
 //            返回新写入的数据id
 
