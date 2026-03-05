@@ -2,8 +2,8 @@
 SELECT @@hostname, @@port, USER();
 SHOW GRANTS;
 # 创建库
-create database if not exists yu_picture;
-use yu_picture;
+create database if not exists yun_picture;
+use yun_picture;
 
 create table if not exists user
 (

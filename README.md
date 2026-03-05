@@ -50,7 +50,7 @@
 
 ```bash
 git clone <repository-url>
-cd yu-picture-bakend
+cd yun-picture-bakend
 ```
 
 ### 2. 数据库配置
@@ -77,7 +77,7 @@ source sql/create_table.sql
 ```yaml
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/yu_picture
+    url: jdbc:mysql://localhost:3306/yun_picture
     username: your_username
     password: your_password
   redis:
@@ -117,7 +117,7 @@ mvn spring-boot:run
 或者运行打包后的 JAR 文件：
 
 ```bash
-java -jar target/yu-picture-bakend-0.0.1-SNAPSHOT.jar
+java -jar target/yun-picture-bakend-0.0.1-SNAPSHOT.jar
 ```
 
 ### 6. 访问应用
@@ -235,12 +235,12 @@ mvn test
 mvn clean package
 ```
 
-生成的 JAR 文件位于 `target/yu-picture-bakend-0.0.1-SNAPSHOT.jar`
+生成的 JAR 文件位于 `target/yun-picture-bakend-0.0.1-SNAPSHOT.jar`
 
 ### 运行
 
 ```bash
-java -jar target/yu-picture-bakend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+java -jar target/yun-picture-bakend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
 ### Docker 部署（可选）
@@ -250,18 +250,18 @@ java -jar target/yu-picture-bakend-0.0.1-SNAPSHOT.jar --spring.profiles.active=p
 ```dockerfile
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
-COPY target/yu-picture-bakend-0.0.1-SNAPSHOT.jar app.jar
+COPY target/yun-picture-bakend-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 
 构建镜像：
 ```bash
-docker build -t yu-picture-backend .
+docker build -t yun-picture-backend .
 ```
 
 运行容器：
 ```bash
-docker run -d -p 8123:8123 --name yu-picture-backend yu-picture-backend
+docker run -d -p 8123:8123 --name yun-picture-backend yun-picture-backend
 ```
 
 ## 🔧 配置说明
@@ -272,7 +272,7 @@ docker run -d -p 8123:8123 --name yu-picture-backend yu-picture-backend
 |--------|------|--------|
 | server.port | 服务端口 | 8123 |
 | server.servlet.context-path | 应用上下文路径 | /api |
-| spring.datasource.url | 数据库连接 | jdbc:mysql://localhost:3306/yu_picture |
+| spring.datasource.url | 数据库连接 | jdbc:mysql://localhost:3306/yun_picture |
 | spring.redis.database | Redis 数据库索引 | 2 |
 | spring.servlet.multipart.max-file-size | 最大上传文件大小 | 10MB |
 
