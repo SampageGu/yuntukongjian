@@ -31,7 +31,8 @@ spring:
             type: CLASS_BASED
             props:
               strategy: standard
-              algorithmClassName: com.yupi.yupicturebackend.manage.sharding.PictureShardingAlgorithm
+              # 确保这个路径和你项目中 PictureShardingAlgorithm.java 文件的实际包路径一致
+              algorithmClassName: com.yunpicture.yunpicturebackend.manage.sharding.PictureShardingAlgorithm
     props:
       sql-show: true
   application:
@@ -85,7 +86,7 @@ knife4j:
       default:
         api-rule: package
         api-rule-resources:
-          - com.yupi.yupicturebackend.controller
+          - com.yunpicture.yunpicturebackend.controller
           -
 #
 #cos:
